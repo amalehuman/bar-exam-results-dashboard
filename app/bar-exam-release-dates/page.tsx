@@ -48,19 +48,19 @@ export default async function BarResultsPage({
     <div className="flex min-h-full flex-1 flex-col bg-zinc-50 font-sans dark:bg-black">
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-12 sm:px-6 lg:px-8">
         <header className="flex flex-col gap-2">
-          <div className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
-            <p>Preparing for the {nextExamSitting} bar exam?</p>
+          <p className="mb-5 text-sm text-zinc-600 dark:text-zinc-400">
+            Preparing for the {nextExamSitting} bar exam? Back to{" "}
             <a
               href="https://www.makethisyourlasttime.com"
-              className="inline-flex items-center gap-1 underline decoration-zinc-400 underline-offset-2 hover:decoration-zinc-600 dark:decoration-zinc-500 dark:hover:decoration-zinc-300"
+              className="underline decoration-zinc-400 underline-offset-2 hover:decoration-zinc-600 dark:decoration-zinc-500 dark:hover:decoration-zinc-300"
             >
-              ← Back to Make This Your Last Time
+              Make This Your Last Time
             </a>
-          </div>
+          </p>
           <h1 className="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
-            Bar Exam Results Release Dates: {formatCycleLabel(cycle)}
+            Bar Exam Results Release Dates by State: {formatCycleLabel(cycle)}
           </h1>
-          <p className="max-w-2xl text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
+          <p className="max-w-2xl whitespace-nowrap text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
             Release timelines and official results links. Data is shown for
             general information; confirm deadlines with your jurisdiction.
           </p>
