@@ -4,7 +4,7 @@ import { fetchBarExamResults } from "@/lib/supabase/server";
 import { getDefaultCycle } from "@/types/bar-exam";
 
 export const metadata: Metadata = {
-  title: "Bar Exam Results Dashboard",
+  title: "Bar Exam Results Release Dates",
   description: "Public bar exam release dates and result links by state.",
 };
 
@@ -25,6 +25,15 @@ function formatCycleLabel(cycle: string): string {
   return `${monthLabel} ${year}`;
 }
 
+function getNextExamSittingLabel(cycle: string): string {
+  const [month, yearText] = cycle.split("-");
+  const year = Number(yearText);
+  if (!month || Number.isNaN(year)) return cycle;
+  if (month === "feb") return `July ${year}`;
+  if (month === "jul") return `February ${year + 1}`;
+  return cycle;
+}
+
 export default async function BarResultsPage({
   searchParams,
 }: {
@@ -32,14 +41,24 @@ export default async function BarResultsPage({
 }) {
   const params = (await searchParams) ?? {};
   const cycle = normalizeCycle(params.cycle);
+  const nextExamSitting = getNextExamSittingLabel(cycle);
   const { rows, error } = await fetchBarExamResults(cycle);
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-zinc-50 font-sans dark:bg-black">
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-12 sm:px-6 lg:px-8">
         <header className="flex flex-col gap-2">
+          <div className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <p>Preparing for the {nextExamSitting} bar exam?</p>
+            <a
+              href="https://www.makethisyourlasttime.com"
+              className="inline-flex items-center gap-1 underline decoration-zinc-400 underline-offset-2 hover:decoration-zinc-600 dark:decoration-zinc-500 dark:hover:decoration-zinc-300"
+            >
+              ← Back to Make This Your Last Time
+            </a>
+          </div>
           <h1 className="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
-            Bar Exam Results: {formatCycleLabel(cycle)}
+            Bar Exam Results Release Dates: {formatCycleLabel(cycle)}
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
             Release timelines and official results links. Data is shown for
