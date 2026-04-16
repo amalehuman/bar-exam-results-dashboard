@@ -365,7 +365,10 @@ export default function BarExamResultsTable({
         </table>
       </div>
 
-      <div className="flex items-center justify-end">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <p className="text-xs text-zinc-500 dark:text-zinc-500">
+          Showing {sorted.length} of {rows.length} jurisdictions.
+        </p>
         <label className="flex min-w-[200px] flex-col gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Cycle
           <select
@@ -381,10 +384,6 @@ export default function BarExamResultsTable({
           </select>
         </label>
       </div>
-
-      <p className="text-xs text-zinc-500 dark:text-zinc-500">
-        Showing {sorted.length} of {rows.length} jurisdictions.
-      </p>
     </div>
   );
 }
