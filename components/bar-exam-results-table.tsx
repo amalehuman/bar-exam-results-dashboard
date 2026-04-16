@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { BarExamResultRow } from "@/types/bar-exam";
 
 type ExamFilter = "all" | "ube" | "non-ube";
@@ -104,11 +105,31 @@ function compareNullableString(a: string | null, b: string | null): number {
   return compareStrings(a ?? "", b ?? "");
 }
 
+type CycleOption = {
+  label: string;
+  value: string;
+};
+
+const CYCLE_OPTIONS: CycleOption[] = [{ label: "Feb 2026", value: "feb-2026" }];
+
+function toCycleLabel(value: string): string {
+  const [month, year] = value.split("-");
+  if (!month || !year) return value;
+  const monthLabel = month === "feb" ? "Feb" : month === "jul" ? "Jul" : month;
+  return `${monthLabel} ${year}`;
+}
+
 export default function BarExamResultsTable({
   rows,
+  cycle,
 }: {
   rows: BarExamResultRow[];
+  cycle: string;
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [examFilter, setExamFilter] = useState<ExamFilter>("all");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [query, setQuery] = useState("");
@@ -181,6 +202,19 @@ export default function BarExamResultsTable({
       setSortKey(key);
       setSortDir("asc");
     }
+  }
+
+  const cycleOptions = useMemo(() => {
+    if (CYCLE_OPTIONS.some((option) => option.value === cycle)) {
+      return CYCLE_OPTIONS;
+    }
+    return [{ label: toCycleLabel(cycle), value: cycle }, ...CYCLE_OPTIONS];
+  }, [cycle]);
+
+  function handleCycleChange(nextCycle: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("cycle", nextCycle);
+    router.push(`${pathname}?${params.toString()}`);
   }
 
   return (
@@ -329,6 +363,23 @@ export default function BarExamResultsTable({
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex items-center justify-end">
+        <label className="flex min-w-[200px] flex-col gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          Cycle
+          <select
+            value={cycle}
+            onChange={(e) => handleCycleChange(e.target.value)}
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-base text-zinc-950 shadow-sm outline-none ring-zinc-400/40 focus:ring-2 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:ring-zinc-500/40"
+          >
+            {cycleOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       <p className="text-xs text-zinc-500 dark:text-zinc-500">

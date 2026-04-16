@@ -8,7 +8,7 @@ export function getSupabaseEnv(): { url: string; key: string } | null {
   return { url, key };
 }
 
-export async function fetchBarExamResults(): Promise<{
+export async function fetchBarExamResults(cycle: string): Promise<{
   rows: BarExamResultRow[];
   error: string | null;
 }> {
@@ -24,7 +24,8 @@ export async function fetchBarExamResults(): Promise<{
   const supabase = createClient(env.url, env.key);
   const { data, error } = await supabase
     .from("bar_exam_results")
-    .select("*");
+    .select("*")
+    .eq("cycle", cycle);
 
   if (error) {
     return { rows: [], error: error.message };
